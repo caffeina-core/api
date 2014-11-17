@@ -28,9 +28,6 @@ class API {
       $route_file .= rtrim('/'.$API_VERS,'/');
       if (is_dir($route_file)){
           Route::group("/$API_VERS",function() use ($route_file,$API_VERS){
-            Route::any('/',function() use ($API_VERS){
-              Event::trigger('api.index',[$API_VERS]);              
-            });
             Event::trigger('api.before');
             array_map(function($f){include $f;},glob($route_file.'/*.php'));
             Event::trigger('api.after');
