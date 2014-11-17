@@ -29,14 +29,14 @@ class API {
         $routes = $route . rtrim('/'.$API_NAMESPACE,'/');
         if (is_dir($routes)){
             Route::group("/$API_NAMESPACE",function() use ($routes,$API_NAMESPACE){
-              Event::trigger('api.before');
+              Event::trigger('api.before',[$API_NAMESPACE]);
               array_map(function($f){include $f;},glob($routes.'/*.php'));
-              Event::trigger('api.after');
+              Event::trigger('api.after',[$API_NAMESPACE]);
             });
         }        
       }
     }
-    Event::trigger('api.run',[Options::get('base.api_version','')]);
+    Event::trigger('api.run');
     if ($main) $main();
     Route::dispatch();
     Response::send();
