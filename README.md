@@ -41,9 +41,6 @@ return [
     'user'      => 'root',
     'password'  => 'root',
   ],
-  'extra' => [
-    'timezone'  => 'Europe/Rome',
-  ],
 ];
 ```
 ## Endpoints Structure
