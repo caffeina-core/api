@@ -7,7 +7,7 @@ if (!defined('APP_DIR')) throw new Exception('API server is not correctly config
 Options::loadPHP(APP_DIR.'/config.php');
 
 // Security
-date_default_timezone_set(Options::get('extra.timezone','Europe/Rome'));
+date_default_timezone_set(Options::get('extra.timezone',date_default_timezone_get()));
 if (Options::get('security.cors',true)) Response::enableCORS();
 
 // Setup database
