@@ -19,7 +19,7 @@ class API {
   public static function run(callable $main = null){
     $API_VERS = Options::get('base.api_version','');
     // Load Routes
-    $route_file = ltrim(Options::get('base.endpoints',APP_DIR.'/routes.php'),'/');
+    $route_file = rtrim(Options::get('base.endpoints',APP_DIR.'/routes.php'),'/');
     // Single file
     if (is_file($route_file)){
       include $route_file;
@@ -27,8 +27,13 @@ class API {
       // Load directory
       $route_file .= rtrim('/'.$API_VERS,'/');
       if (is_dir($route_file)){
-          Route::group("/$API_VERS",function(){
-            array_map(function($f){include($f);},glob($route_file.'/*.php'));
+          Route::group("/$API_VERS",function() use ($route_file){
+            Route::any('/',function(){
+              Event::trigger('api.index',[$API_VERS]);              
+            });
+            Event::trigger('api.before');
+            array_map(function($f){include $f;},glob($route_file.'/*.php'));
+            Event::trigger('api.after');
           });
       }
     }

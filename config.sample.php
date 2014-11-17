@@ -8,7 +8,7 @@ return [
   'base' => [
     // Pass the endpoints directory.
     //   API routes will be loaded in {endpoints}/{api_version}/*.php
-    'endpoints' => APP_DIR.'endpoints',
+    'endpoints' => APP_DIR.'/endpoints',
     'api_version' => 'v1',
   ],
 
