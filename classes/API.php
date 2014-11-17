@@ -27,8 +27,8 @@ class API {
       // Load directory
       $route_file .= rtrim('/'.$API_VERS,'/');
       if (is_dir($route_file)){
-          Route::group("/$API_VERS",function() use ($route_file){
-            Route::any('/',function(){
+          Route::group("/$API_VERS",function() use ($route_file,$API_VERS){
+            Route::any('/',function() use ($API_VERS){
               Event::trigger('api.index',[$API_VERS]);              
             });
             Event::trigger('api.before');
