@@ -1,8 +1,57 @@
 <?php
 
 class API {
-  
-  public static function error($message,$status=501){
+
+  public static function resource($path, array $options){
+    $options = array_replace_recursive([
+      "class"    => null,
+      "sql"      => [
+        "table"       => null,
+        "raw"         => null,
+        "primary_key" => "id",
+      ],
+    ], $options);
+
+    $path      = rtrim($path,"/") ?: "/";
+    $resource  = $options["class"];
+    $table     = $options["sql"]["table"];
+    $raw       = $options["sql"]["raw"];
+    $pkey      = $options["sql"]["primary_key"];
+
+    $sql_list   = $raw ?: "SELECT * FROM $table";
+    $sql_single = strpos($sql_list, "WHERE")===false 
+                ? "$sql_list WHERE $pkey=:$pkey" 
+                : str_replace("WHERE ","WHERE $pkey=:$pkey AND ",$sql_list);
+    $sql_single .= " LIMIT 1";
+
+    // Ensure endpoint options sanity
+    if (class_exists($resource, false) && ($table || $raw) && $pkey ) {
+
+      // List
+      Route::on($path, function() use ($resource, $table, $sql_list) {
+        $resource::setExposure("list");
+        return $resource::fromSQL($sql_list);
+      });
+
+      // Single
+      Route::on("$path/:id", function($id) use ($resource, $table, $pkey, $sql_single) {
+        return ['data' => ($resource::singleFromSQL($sql_single,["$pkey"=>$id])
+               ?: API::error("Not found",404))];
+      });
+
+      // Projection short-hand
+      Route::on("$path/:id/:parameter", function($id, $parameter) use ($resource, $table, $pkey, $sql_single) {
+        Filter::add("api.$resource.getProjectionFields", function($t) use ($parameter){
+          return $parameter;
+        });
+        return ['data' => ($resource::singleFromSQL($sql_single,["$pkey"=>$id])
+               ?: API::error("Not found",404))];
+      });
+
+    }
+  }
+
+  public static function error($message, $status=501){
     Event::trigger('api.error',[$message,$status]);
     Response::status($status);
     Response::json([
@@ -14,32 +63,6 @@ class API {
     ]);
     Response::send();
     exit;
-  }
-
-  public static function run(callable $main = null){
-    $API_VERS = Options::get('base.api_version','');
-    // Load Routes
-    $route = rtrim(Options::get('base.endpoints',APP_DIR.'/routes.php'),'/');
-    // Single file
-    if (is_file($route)){
-      include $route;
-    } else {
-      // Load directory
-      foreach((array)$API_VERS as $API_NAMESPACE){
-        $routes = $route . rtrim('/'.$API_NAMESPACE,'/');
-        if (is_dir($routes)){
-            Route::group("/$API_NAMESPACE",function() use ($routes,$API_NAMESPACE){
-              Event::trigger('api.before',[$API_NAMESPACE]);
-              array_map(function($f){include $f;},glob($routes.'/*.php'));
-              Event::trigger('api.after',[$API_NAMESPACE]);
-            });
-        }        
-      }
-    }
-    Event::trigger('api.run');
-    if ($main) $main();
-    Route::dispatch();
-    Response::send();
   }
 
 }

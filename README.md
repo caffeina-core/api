@@ -1,4 +1,4 @@
-Core – REST API tools
+Core – API Extensions
 ====
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/caffeina-core/api/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/caffeina-core/api/?branch=master)
@@ -11,60 +11,41 @@ Core – REST API tools
 
 ## Installation
 
-Add package to your **composer.json**:
+Install via [composer](https://getcomposer.org/download/):
 
-```json
-{
-  "require": {
-    "caffeina-core/api": "~1"
-  }
-}
+```bash
+$ composer require caffeina-core/api
 ```
 
+## Documentation
 
-## Config Example
-
-You can find the complete example in `config.sample.php`:
-
-```php
-<?php
-return [
-  'base' => [
-    'endpoints' => APP_DIR.'/endpoints',
-    'api_version' => ['v1','v2','beta'],
-  ],
-  'database' => [
-    'enable'    => true,
-    'name'      => 'my_awesome_api',
-    'host'      => 'localhost',
-    'port'      => 3306,
-    'user'      => 'root',
-    'password'  => 'root',
-  ],
-];
-```
-## Endpoints Structure
-
-Endpoints definition will be placed in `base.endpoints` directory. Every API namespace must be located there as a directory containing the route definitions files.
-
-Example :
-
-```
-/endpoints
-          /v1/api.php
-          /v2/api.php
-          /beta
-                /api.php
-                /api-new.php
-```
-
-## Event hooks
-
-| Hook | Event Name | Parameters |
-|------|------------|------------|
-| `api.run`    | API server started                                    | |
-| `api.error`  | API::error function triggered                         | $message,$status |
-| `api.before` | Called when API namespace route group opens.          | $API_NAMESPACE |
-| `api.after`  | Called before the API namespace route group closing.  | $API_NAMESPACE |
+See the [wiki](https://github.com/caffeina-core/api/wiki).
 
 
+## Contributing
+
+How to get involved:
+
+1. [Star](https://github.com/caffeina-core/api/stargazers) the project!
+2. Answer questions that come through [GitHub issues](https://github.com/caffeina-core/api/issues?state=open)
+3. [Report a bug](https://github.com/caffeina-core/api/issues/new) that you find
+
+
+Core follows the [GitFlow branching model](http://nvie.com/posts/a-successful-git-branching-model). The ```master``` branch always reflects a production-ready state while the latest development is taking place in the ```develop``` branch.
+
+Each time you want to work on a fix or a new feature, create a new branch based on the ```develop``` branch: ```git checkout -b BRANCH_NAME develop```. Only pull requests to the ```develop``` branch will be merged.
+
+Pull requests are **highly appreciated**.
+
+Solve a problem. Features are great, but even better is cleaning-up and fixing issues in the code that you discover.
+
+## Versioning
+
+Core is maintained by using the [Semantic Versioning Specification (SemVer)](http://semver.org).
+
+
+## Copyright and license
+
+Copyright 20145 [Caffeina](http://caffeina.co) srl under the [MIT license](LICENSE.md).
+
+<p align="center"><a href="http://caffeina.co" target="_blank" title="Caffeina - Ideas Never Sleep"><img src="https://github.com/CaffeinaLab/BrandResources/blob/master/caffeina-handmade.png?raw=true" align="center" height="65"></a></p>
