@@ -5,6 +5,7 @@ class API {
   public static function resource($path, array $options){
     $options = array_replace_recursive([
       "class"    => null,
+      "list_mode" => "list",
       "sql"      => [
         "table"       => null,
         "raw"         => null,
@@ -28,8 +29,8 @@ class API {
     if (class_exists($resource, false) && ($table || $raw) && $pkey ) {
 
       // List
-      Route::on($path, function() use ($resource, $table, $sql_list) {
-        $resource::setExposure("list");
+      Route::on($path, function() use ($resource, $table, $sql_list, $options) {
+        $resource::setExposure($options["list_mode"]);
         return $resource::fromSQL($sql_list);
       });
 
