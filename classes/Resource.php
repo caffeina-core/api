@@ -98,7 +98,7 @@ abstract class Resource implements JsonSerializable {
   }
 
   public static function singleFromSQL($sql, $params=[]){
-    return $data = SQL::single($sql, $params) ? new static($data) : false;
+    return ($data = SQL::single($sql, $params)) ? new static($data) : false;
   }
 
 }
