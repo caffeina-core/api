@@ -33,8 +33,9 @@ Tramite il modulo `API` possiamo ora esporre un endpoint per la restituzione dei
 
 ```php
 API::resource("/categories", [
-  "class"    => "Category",
-  "sql"      => [
+  "class"     => "Category",
+  "list_mode" => "list",
+  "sql"       => [
     "table"       => "categories",
   ],
 ]);
